@@ -36,6 +36,56 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         item.getName().setText(user.getNama());
 
+        Button btnEdit = item.itemView.findViewById(R.id.btnEdit);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View mView = LayoutInflater.from(context).inflate(R.layout.activity_update_dialog,null);
+                AlertDialog alertDialog = new AlertDialog.Builder(context)
+                        .setView(mView)
+                        .show();
+
+                DaoSession daoSession;
+                daoSession = ((MyApp) ((Activity) context).getApplication()).getDaoSession();
+
+                Button btnEdit2 = alertDialog.findViewById(R.id.btnUpdate);
+                btnEdit2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UserDao userDao = daoSession.getUserDao();
+                        User user1 = new User();
+                        EditText nama = mView.findViewById(R.id.txtNama);
+                        EditText alamat = mView.findViewById(R.id.txtAlamat);
+                        EditText telp = mView.findViewById(R.id.txtTelp);
+                        Button btnSimpan = mView.findViewById(R.id.btnUpdate);
+
+                        user1.setId(user.getId());
+                        user1.setNama(nama.getText().toString());
+                        user1.setAlamat(alamat.getText().toString());
+                        user1.setTelp(telp.getText().toString());
+                        userDao.update(user1);
+
+                        Toast.makeText(context,"Berhasil Di Update",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
+        /*Hapus | Delete*/
+        Button btnHapus = item.itemView.findViewById(R.id.btnHapus);
+        btnHapus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DaoSession daoSession;
+                daoSession = ((MyApp) ((Activity) context).getApplication()).getDaoSession();
+
+                UserDao userDao = daoSession.getUserDao();
+
+                userDao.deleteByKey(user.getId());
+                Toast.makeText(context,"Berhasil Dihapus",Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Log.e("name",user.getNama());
     }
